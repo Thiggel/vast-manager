@@ -9,9 +9,10 @@ INSTALL_DIR="/usr/local/bin"
 CONFIG_DIR="$HOME/.vast-manager"
 
 # Check if vast-cli is installed
-if ! command -v vast > /dev/null; then
+if ! command -v vastai > /dev/null; then
     echo "Error: vast-cli is not installed."
-    echo "Please install the Vast.ai CLI first by following the instructions at: https://github.com/vast-ai/vast-python"
+    echo "Please install the Vast.ai CLI first with: pip install vast-ai"
+    echo "For more information, visit: https://cloud.vast.ai/cli/"
     exit 1
 fi
 

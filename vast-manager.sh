@@ -27,8 +27,8 @@ log() {
 }
 
 # Check if vast-cli is installed
-if ! command -v vast > /dev/null; then
-    log "Error: vast-cli is not installed. Please install it first."
+if ! command -v vastai > /dev/null; then
+    log "Error: vast-cli is not installed. Please install it first with 'pip install vast-ai'"
     exit 1
 fi
 
@@ -50,7 +50,7 @@ create_instance() {
     log "Searching for cheapest $gpu_type instance..."
     
     # Find the cheapest instance with the requested GPU
-    local offers_json=$(vast search offers --raw -o 'gpu_name[]="$gpu_type"' 2>/dev/null)
+    local offers_json=$(vastai search offers --raw -o "gpu_name[]=\"$gpu_type\"" 2>/dev/null)
     
     if [[ -z "$offers_json" || "$offers_json" == "[]" ]]; then
         log "Error: No instances found with GPU type: $gpu_type"
@@ -77,7 +77,7 @@ print(offers[0]['id'])
     
     # Create the instance with the specified template
     log "Creating instance with template: $template_name"
-    local create_result=$(vast create instance $cheapest_offer_id --image "$template_name" --raw 2>/dev/null)
+    local create_result=$(vastai create instance $cheapest_offer_id --image "$template_name" --raw 2>/dev/null)
     
     # Extract instance ID and SSH command
     local instance_id=$(echo "$create_result" | python3 -c "
@@ -97,7 +97,7 @@ except:
     log "Created instance with ID: $instance_id"
     
     # Get instance details including SSH command
-    local instance_json=$(vast show instances $instance_id --raw 2>/dev/null)
+    local instance_json=$(vastai show instances $instance_id --raw 2>/dev/null)
     local ssh_command=$(echo "$instance_json" | python3 -c "
 import json, sys
 try:
@@ -327,7 +327,7 @@ destroy_instance() {
         log "Destroying instance $instance_id..."
     fi
     
-    vast destroy instance $instance_id >/dev/null 2>&1
+    vastai destroy instance $instance_id >/dev/null 2>&1
     
     if [[ $? -eq 0 ]]; then
         # Remove the instance from our tracking file
